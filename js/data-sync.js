@@ -40,8 +40,8 @@
     var allCards = [];
 
     call("products.list", {}).then(function (list) {
-      /* 与 H5 首页「好物推荐」一致: 只展示 home_recommend 商品 (云函数已过滤 is_show 隐藏项) */
-      allCards = (list || []).filter(function (p) { return p.home_recommend === true; });
+      /* 与 H5 商城界面一致: 展示全部上架商品 (云函数已过滤 is_show 隐藏项) */
+      allCards = (list || []).filter(function (p) { return p.is_show !== false; });
       shopGrid.innerHTML = "";
       if (!allCards.length) {
         shopGrid.innerHTML = '<div class="section-tip">暂无商品，敬请期待</div>';
