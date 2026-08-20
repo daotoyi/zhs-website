@@ -2,6 +2,61 @@
 (function () {
   "use strict";
 
+  /* 导航高亮: 按当前页面自动匹配 (红框 + 浮动动画) */
+  (function () {
+    var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    if (!page) page = "index.html";
+    document.querySelectorAll(".nav-links a").forEach(function (a) {
+      a.classList.remove("active");
+      var href = (a.getAttribute("href") || "").toLowerCase().split("?")[0];
+      if (href === page) a.classList.add("active");
+    });
+  })();
+
+  /* 主题切换: 浅色 / 暗色 / 随系统 */
+  (function () {
+    var KEY = "zhs-theme";
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    var root = document.documentElement;
+
+    function resolve(theme) {
+      if (theme === "dark") return "dark";
+      if (theme === "light") return "light";
+      return mq.matches ? "dark" : "light";
+    }
+
+    function apply(theme) {
+      var real = resolve(theme);
+      root.setAttribute("data-theme", real);
+      document.querySelectorAll(".ts-btn[data-theme]").forEach(function (b) {
+        b.classList.toggle("on", b.getAttribute("data-theme") === theme);
+      });
+    }
+
+    var saved = "auto";
+    try { saved = localStorage.getItem(KEY) || "auto"; } catch (e) {}
+    apply(saved);
+
+    var wrap = document.getElementById("themeSwitch");
+    if (wrap) {
+      wrap.addEventListener("click", function (e) {
+        var btn = e.target.closest ? e.target.closest(".ts-btn") : null;
+        if (!btn) return;
+        var t = btn.getAttribute("data-theme");
+        try { localStorage.setItem(KEY, t); } catch (e) {}
+        apply(t);
+      });
+    }
+
+    if (mq.addEventListener) {
+      mq.addEventListener("change", function () {
+        var cur = "auto";
+        try { cur = localStorage.getItem(KEY) || "auto"; } catch (e) {}
+        if (cur === "auto") apply("auto");
+      });
+    }
+  })();
+
   /* 移动端导航开关 */
   var toggle = document.querySelector(".nav-toggle");
   var links = document.querySelector(".nav-links");
