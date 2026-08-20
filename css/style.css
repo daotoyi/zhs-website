@@ -406,6 +406,9 @@ img { display: block; max-width: 100%; }
 
 .feat-qr:hover { border-color: var(--gold); }
 
+.feat-qr-row { display: flex; gap: 12px; margin-bottom: 16px; }
+.feat-qr-row .feat-qr { margin-bottom: 0; }
+
 .feat-name { font-size: 20px; font-weight: 700; font-family: var(--kai); letter-spacing: 2px; margin-bottom: 6px; }
 .feat-tag { font-size: 12px; color: var(--red); letter-spacing: 2px; margin-bottom: 12px; }
 .feat-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.9; }
