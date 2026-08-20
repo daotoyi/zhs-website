@@ -376,6 +376,7 @@ img { display: block; max-width: 100%; }
   border-radius: 14px;
   padding: 34px 26px;
   transition: all .3s;
+  text-align: center;
 }
 
 .feat-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(60, 30, 20, .1); border-color: #dfd3c0; }
@@ -400,7 +401,7 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 4px 14px rgba(60, 30, 20, .06);
   object-fit: cover;
   display: block;
-  margin-bottom: 16px;
+  margin: 0 auto 16px;
   background: #fff;
 }
 
