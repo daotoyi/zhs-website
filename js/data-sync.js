@@ -35,12 +35,23 @@
   var shopGrid = document.querySelector(".shop-grid[data-dynamic]");
   var shopNote = document.querySelector(".shop-note");
   if (shopGrid) {
-    var CATE_NAMES = { 1: "开运饰品", 2: "香薰禅修", 3: "文房雅器", 4: "茶道器具", 5: "风水摆件", 6: "服饰配件", 7: "书籍经典" };
-    var CATE_ORDER = ["all", 1, 2, 3, 4, 5, 6, 7];
+    var CATE_NAMES = {};   /* 由 categories.list 动态填充 */
     var allCards = [];
 
-    call("products.list", {}).then(function (list) {
-      /* 与 H5 商城界面一致: 展示全部上架商品 (云函数已过滤 is_show 隐藏项) */
+    /* 与 H5 商城界面一致: 分类与商品均从接口实时同步 */
+    call("categories.list", {}).then(function (cates) {
+      var tabsWrap = document.querySelector(".shop-tabs");
+      cates = cates || [];
+      cates.forEach(function (c) { CATE_NAMES[c.id] = c.name; });
+      if (tabsWrap && cates.length) {
+        var html = '<button class="shop-tab on" data-cate="all">全部</button>';
+        cates.forEach(function (c) {
+          html += '<button class="shop-tab" data-cate="' + esc(c.id) + '">' + esc(c.name) + "</button>";
+        });
+        tabsWrap.innerHTML = html;
+      }
+      return call("products.list", {});
+    }).then(function (list) {
       allCards = (list || []).filter(function (p) { return p.is_show !== false; });
       shopGrid.innerHTML = "";
       if (!allCards.length) {
