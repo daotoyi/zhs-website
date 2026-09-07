@@ -4,26 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>道元易学 APP 下载</title>
-<meta name="description" content="道元易学 APP - 周易排盘、八字命理、经典课程随身学。下载道元易学，开启传统文化修行之旅。">
+<meta name="description" content="道元易学 APP - 河洛文化、八字命理、奇门遁甲、五行术数、道家文创、德道经、汉字拆解、书法修身、线下盘道随身学。下载道元易学，开启传统文化修行之旅。">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: linear-gradient(160deg, #f8f5f0 0%, #f0ebe5 100%);
+    background: linear-gradient(165deg, #c41e3a 0%, #9c1630 100%);
     color: #2a2a2a;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
+    justify-content: flex-start;
+    padding: 7vh 18px 7vh;
   }
   .card {
     background: #fffdfa;
     border: 1px solid #e8e2da;
     border-radius: 20px;
     box-shadow: 0 24px 60px rgba(60, 30, 20, .1);
-    padding: 48px 40px 40px;
+    padding: 34px 26px 30px;
     max-width: 420px;
     width: 100%;
     text-align: center;
@@ -87,9 +87,10 @@
   }
   .btn-ios:hover { border-color: #b8860b; color: #b8860b; }
   .tip {
+    display: none;
     margin-top: 24px;
     font-size: 12.5px;
-    color: #a39687;
+    color: #c98a93;
     line-height: 1.9;
   }
   .tip b { color: #c41e3a; font-weight: 600; }
@@ -113,9 +114,15 @@
     <h1>道元易学</h1>
     <p class="sub">观天道 · 明人事 · 致中和</p>
     <div class="tags">
-      <span class="tag">周易排盘</span>
+      <span class="tag">河洛文化</span>
       <span class="tag">八字命理</span>
-      <span class="tag">经典课程</span>
+      <span class="tag">奇门遁甲</span>
+      <span class="tag">五行术数</span>
+      <span class="tag">道家文创</span>
+      <span class="tag">德道经</span>
+      <span class="tag">汉字拆解</span>
+      <span class="tag">书法修身</span>
+      <span class="tag">线下盘道</span>
     </div>
     <a class="btn-download" href="https://club.zhenhesheng.cn/h5/apk/daoyuan-v1.12.11.apk">下载 Android 版</a>
     <a class="btn-ios" href="https://club.zhenhesheng.cn/">iOS 版 · 敬请期待（前往 H5）</a>
@@ -127,6 +134,14 @@
     <a class="back" href="https://zhenhesheng.cn/">← 返回真和盛官网</a>
     <p class="ver">当前版本 v1.12.11</p>
   </div>
+
+  <script>
+    // 仅当在微信内置浏览器中打开时，显示「微信内无法下载」提示
+    if (/MicroMessenger/i.test(navigator.userAgent)) {
+      var t = document.querySelector('.tip');
+      if (t) t.style.display = 'block';
+    }
+  </script>
 
 </body>
 </html>
