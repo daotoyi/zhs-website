@@ -704,13 +704,18 @@ img { display: block; max-width: 100%; }
 .footer-bottom a:hover { color: #e8c98a; }
 
 .beian-police { display: inline-block; margin-top: 8px; }
-.beian-police .beian-icon {
+.beian-police .beian-icon,
+.beian-row .beian-icon {
   height: 16px;
   width: auto;
   vertical-align: -3px;
   margin-right: 5px;
   display: inline-block;
 }
+.beian-row { display: inline-block; margin-top: 8px; white-space: nowrap; }
+.beian-row a { color: #7d7266; font-size: inherit; text-decoration: none; }
+.beian-row a:hover { color: #e8c98a; }
+.beian-row .beian-sep { color: #7d7266; }
 
 /* ---------------- 内页 Hero ---------------- */
 .page-hero {
