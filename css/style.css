@@ -370,6 +370,10 @@ img { display: block; max-width: 100%; }
 /* ---------------- 栏目卡 ---------------- */
 .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 
+/* 道之术 五术通识: 3列x2行, 卡片水平居中 */
+.feat-grid-5shu { grid-template-columns: repeat(3, 1fr); justify-items: center; }
+.feat-grid-5shu .feat-card { width: 100%; max-width: 340px; }
+
 .feat-card {
   background: var(--card);
   border: 1px solid var(--line);
@@ -393,6 +397,18 @@ img { display: block; max-width: 100%; }
 .feat-icon.i2 { background: #f8efdd; }
 .feat-icon.i3 { background: #e9f0e4; }
 .feat-icon.i4 { background: #e7edf5; }
+
+/* 古风印章图标 (道之术 五术卡片) */
+.feat-img {
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 18px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(60, 30, 20, .08);
+}
 
 .feat-qr {
   width: 108px; height: 108px;
@@ -801,7 +817,7 @@ img { display: block; max-width: 100%; }
 
 /* ---------------- 响应式 ---------------- */
 @media (max-width: 960px) {
-  .philosophy-grid, .feat-grid { grid-template-columns: repeat(2, 1fr); }
+  .philosophy-grid, .feat-grid, .feat-grid-5shu { grid-template-columns: repeat(2, 1fr); }
   .shop-grid { grid-template-columns: repeat(2, 1fr); }
   .schedule-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
@@ -831,7 +847,7 @@ img { display: block; max-width: 100%; }
   .section { padding: 60px 0; }
   .section-title { font-size: 28px; letter-spacing: 4px; }
   .quote-text { font-size: 22px; }
-  .philosophy-grid, .feat-grid, .shop-grid { grid-template-columns: 1fr; }
+  .philosophy-grid, .feat-grid, .feat-grid-5shu, .shop-grid { grid-template-columns: 1fr; }
   .about-cards { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   .pandao-banner { padding: 34px 26px; }
