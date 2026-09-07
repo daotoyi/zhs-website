@@ -52,7 +52,10 @@
       }
       return call("products.list", {});
     }).then(function (list) {
-      allCards = (list || []).filter(function (p) { return p.is_show !== false; });
+      allCards = (list || []).filter(function (p) {
+        /* 与 H5 商城一致: 仅保留「属于可见分类」的商品 (隐藏分类下的商品不显示) */
+        return p.is_show !== false && CATE_NAMES[p.cate_id];
+      });
       shopGrid.innerHTML = "";
       if (!allCards.length) {
         shopGrid.innerHTML = '<div class="section-tip">暂无商品，敬请期待</div>';
