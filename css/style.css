@@ -705,9 +705,9 @@ img { display: block; max-width: 100%; }
 
 .beian-police { display: inline-block; margin-top: 8px; }
 .beian-police .beian-icon {
-  width: 15px;
-  height: 15px;
-  vertical-align: -2px;
+  height: 16px;
+  width: auto;
+  vertical-align: -3px;
   margin-right: 5px;
   display: inline-block;
 }
