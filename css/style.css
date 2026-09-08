@@ -639,7 +639,7 @@ img { display: block; max-width: 100%; }
 .tl-item {
   position: relative;
   width: 50%;
-  padding: 0 44px 44px;
+  padding: 0 34px 18px;
 }
 
 .tl-item:nth-child(odd) { left: 0; text-align: right; }
@@ -665,7 +665,7 @@ img { display: block; max-width: 100%; }
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 24px 26px;
+  padding: 18px 22px 16px;
   transition: all .3s;
   display: block;
   text-align: left;
@@ -674,9 +674,19 @@ img { display: block; max-width: 100%; }
 
 .tl-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(60, 30, 20, .1); border-color: #dfd3c0; }
 
-.tl-icon { font-size: 26px; line-height: 1; }
+/* 古风印章图标（传承脉络各时期） */
+.tl-img {
+  width: 62px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 10px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(60, 30, 20, .08);
+}
 
-.tl-title { font-size: 18px; font-weight: 700; font-family: var(--kai); color: var(--ink); margin-top: 10px; letter-spacing: 1px; }
+.tl-title { font-size: 17px; font-weight: 700; font-family: var(--kai); color: var(--ink); margin-top: 2px; letter-spacing: 1px; }
 
 .tl-period {
   display: inline-block;
@@ -685,12 +695,12 @@ img { display: block; max-width: 100%; }
   background: #fbe9ec;
   padding: 2px 12px;
   border-radius: 999px;
-  margin: 8px 0 4px;
+  margin: 6px 0 3px;
   letter-spacing: 1px;
 }
 
-.tl-year { font-size: 13px; color: var(--gold); font-weight: 600; margin-bottom: 6px; }
-.tl-desc { font-size: 13.5px; color: var(--ink-soft); line-height: 1.9; }
+.tl-year { font-size: 12.5px; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
+.tl-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.7; }
 
 /* ---------------- 页脚 ---------------- */
 .footer {
@@ -870,6 +880,6 @@ img { display: block; max-width: 100%; }
   .article-row { flex-wrap: wrap; }
   .article-meta { margin-left: 74px; }
   .timeline::before { left: 10px; }
-  .tl-item, .tl-item:nth-child(odd), .tl-item:nth-child(even) { width: 100%; left: 0; text-align: left; padding: 0 0 32px 40px; }
+  .tl-item, .tl-item:nth-child(odd), .tl-item:nth-child(even) { width: 100%; left: 0; text-align: left; padding: 0 0 18px 40px; }
   .tl-dot, .tl-item:nth-child(odd) .tl-dot, .tl-item:nth-child(even) .tl-dot { left: 2px; right: auto; }
 }
