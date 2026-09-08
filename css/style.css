@@ -398,10 +398,22 @@ img { display: block; max-width: 100%; }
 .feat-icon.i3 { background: #e9f0e4; }
 .feat-icon.i4 { background: #e7edf5; }
 
-/* 古风印章图标 (道之术 五术卡片) */
+/* 古风印章图标 (道之术 五术卡片 / 首页经典研习) */
 .feat-img {
   width: 88px;
   height: 88px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 18px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(60, 30, 20, .08);
+}
+
+/* 古风印章图标 (首页 道家四象) */
+.ph-img {
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 50%;
   display: block;
