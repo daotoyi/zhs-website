@@ -370,6 +370,10 @@ img { display: block; max-width: 100%; }
 /* ---------------- 栏目卡 ---------------- */
 .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 
+/* 同修三约（盘道页）：三卡居中 */
+.vow-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+.vow-grid .ph-card { flex: 0 1 300px; max-width: 320px; }
+
 /* 道之术 五术通识: 3列x2行, 卡片水平居中 */
 .feat-grid-5shu { grid-template-columns: repeat(3, 1fr); justify-items: center; }
 .feat-grid-5shu .feat-card { width: 100%; max-width: 340px; }
