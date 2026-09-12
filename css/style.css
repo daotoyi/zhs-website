@@ -716,11 +716,15 @@ img { display: block; max-width: 100%; }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: minmax(0, 2fr) repeat(3, auto);
+  gap: 36px;
+  align-items: start;
   padding-bottom: 44px;
   border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
+
+/* 右侧三组链接列：宽度随内容自适应，列内文字左右居中 */
+.footer-grid > div:not(:first-child) { text-align: center; }
 
 .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .footer-brand img { width: 40px; height: 40px; border-radius: 8px; object-fit: contain; background: #fff; }
