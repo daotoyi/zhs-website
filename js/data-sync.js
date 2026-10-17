@@ -212,14 +212,30 @@
     track.innerHTML = "";
     dots.innerHTML = "";
 
-    urls.forEach(function (u, i) {
-      var img = document.createElement("img");
-      img.className = "pd-gallery-img" + (i === 0 ? " on" : "");
-      img.src = u;
-      img.alt = "盘道活动";
-      img.loading = i === 0 ? "eager" : "lazy";
-      track.appendChild(img);
+    /* 同修汇规则: 屏内并排 2 张(仅 1 张时铺满), 每张 16:9, 4s 自动逐张左滑 */
+    var total = urls.length;
+    var perView = total > 1 ? 2 : 1;
+    var loop = total > perView ? perView : 0;
+    var SPEED = 600; // 与 CSS transition .6s 对齐
 
+    track.classList.toggle("single", perView === 1);
+
+    function makeItem(u, idx) {
+      var box = document.createElement("div");
+      box.className = "pd-gallery-item";
+      var img = document.createElement("img");
+      img.src = u;
+      img.alt = "盘道活动 " + ((idx % total) + 1);
+      img.loading = idx < perView ? "eager" : "lazy";
+      box.appendChild(img);
+      return box;
+    }
+
+    urls.forEach(function (u, i) { track.appendChild(makeItem(u, i)); });
+    /* 末尾补 perView 张克隆, 用于无缝回卷 */
+    for (var c = 0; c < loop; c++) track.appendChild(makeItem(urls[c], c));
+
+    urls.forEach(function (u, i) {
       var dot = document.createElement("button");
       dot.type = "button";
       dot.className = "pd-gallery-dot" + (i === 0 ? " on" : "");
@@ -231,21 +247,63 @@
     var cur = 0;
     var timer = null;
 
-    function go(i) {
-      var imgs = track.querySelectorAll(".pd-gallery-img");
+    /* 单张步进距离 = 卡片宽 + 间隙 */
+    function stepPx() {
+      var item = track.querySelector(".pd-gallery-item");
+      if (!item) return 0;
+      var cs = getComputedStyle(track);
+      var gap = parseFloat(cs.columnGap || cs.gap) || 0;
+      return item.getBoundingClientRect().width + gap;
+    }
+
+    function paint(noAnim) {
+      if (noAnim) track.style.transition = "none";
+      track.style.transform = "translateX(" + (-cur * stepPx()) + "px)";
+      if (noAnim) {
+        void track.offsetWidth; // 强制回流, 让跳变立即生效
+        track.style.transition = "";
+      }
       var ds = dots.querySelectorAll(".pd-gallery-dot");
-      cur = (i + urls.length) % urls.length;
-      for (var k = 0; k < imgs.length; k++) imgs[k].classList.toggle("on", k === cur);
-      for (var j = 0; j < ds.length; j++) ds[j].classList.toggle("on", j === cur);
+      var active = cur % total;
+      for (var j = 0; j < ds.length; j++) ds[j].classList.toggle("on", j === active);
+    }
+
+    function go(i) {
+      cur = ((i % total) + total) % total;
+      paint(false);
+    }
+
+    function next() {
+      if (!loop) return;
+      cur++;
+      paint(false);
+      /* 滑到克隆区(视觉等同第一屏)后, 无动画瞬时归位 → 无缝循环 */
+      if (cur >= total) {
+        setTimeout(function () {
+          if (cur >= total) { cur = 0; paint(true); }
+        }, SPEED + 40);
+      }
     }
 
     function play() {
       clearInterval(timer);
-      timer = setInterval(function () { go(cur + 1); }, 4000);
+      if (loop) timer = setInterval(next, 4000);
     }
 
     host.addEventListener("mouseenter", function () { clearInterval(timer); });
     host.addEventListener("mouseleave", play);
+
+    /* 视口变化后重算步进距离, 避免错位 */
+    var rzTimer = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(rzTimer);
+      rzTimer = setTimeout(function () {
+        if (cur >= total) cur = 0;
+        paint(true);
+      }, 150);
+    });
+
+    paint(true);
     play();
   }
 })();

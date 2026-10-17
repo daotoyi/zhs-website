@@ -641,46 +641,51 @@ img { display: block; max-width: 100%; }
 
 .schedule-grid[data-dynamic] .sch-body .sch-meta { margin-top: auto; }
 
-/* ---- 盘道轮播图 (同步同修汇盘道动态轮播) ---- */
+/* ---- 盘道轮播图 (同步同修汇盘道动态轮播: 屏内并排 2 张, 逐张左滑) ---- */
 .pandao-gallery {
   position: relative;
   margin-top: 38px;
+}
+
+.pandao-gallery[hidden] { display: none; }
+
+.pd-gallery-viewport {
+  overflow: hidden;
   border-radius: 16px;
+}
+
+.pd-gallery-track {
+  display: flex;
+  gap: var(--pd-gap, 12px);
+  transition: transform .6s cubic-bezier(.4, .2, .2, 1);
+  will-change: transform;
+}
+
+/* 未开启轮播(不足 3 张)时不做过渡 */
+.pd-gallery-track.single .pd-gallery-item { flex-basis: 100%; }
+
+.pd-gallery-item {
+  flex: 0 0 calc((100% - var(--pd-gap, 12px)) / 2);
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
   overflow: hidden;
   background: #2a1c0d;
   border: 1px solid var(--line);
 }
 
-.pandao-gallery[hidden] { display: none; }
-
-.pd-gallery-track {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 21 / 9;
-}
-
-.pd-gallery-img {
-  position: absolute;
-  inset: 0;
+.pd-gallery-item img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity .9s ease;
 }
 
-.pd-gallery-img.on { opacity: 1; }
-
 .pd-gallery-dots {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  z-index: 2;
+  margin-top: 18px;
 }
 
 .pd-gallery-dot {
@@ -689,15 +694,17 @@ img { display: block; max-width: 100%; }
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, .45);
+  background: rgba(201, 169, 106, .32);
   cursor: pointer;
   transition: all .3s;
 }
 
+.pd-gallery-dot:hover { background: rgba(201, 169, 106, .6); }
+
 .pd-gallery-dot.on {
   width: 22px;
   border-radius: 999px;
-  background: #fff;
+  background: var(--gold);
 }
 
 /* ---------------- 时间轴（道之源） ---------------- */
@@ -970,7 +977,13 @@ img { display: block; max-width: 100%; }
   .about-cards { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   .pandao-banner { padding: 34px 26px; }
-  .pd-gallery-track { aspect-ratio: 4 / 3; }
+  /* 手机端同样并排 2 张, 只收紧间隙与圆角 */
+  .pandao-gallery { margin-top: 28px; --pd-gap: 8px; }
+  .pd-gallery-viewport { border-radius: 12px; }
+  .pd-gallery-item { border-radius: 10px; }
+  .pd-gallery-dots { margin-top: 14px; }
+  .pd-gallery-dot { width: 7px; height: 7px; }
+  .pd-gallery-dot.on { width: 18px; }
   .schedule-grid[data-dynamic] .sch-body { padding: 22px 22px 24px; }
   .article-row { flex-wrap: wrap; }
   .article-meta { margin-left: 74px; }
