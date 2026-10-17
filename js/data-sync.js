@@ -67,7 +67,8 @@
         var card = document.createElement("a");
         card.className = "product-card";
         card.setAttribute("data-cate", String(p.cate_id || 0));
-        card.href = "https://club.zhenhesheng.cn/";
+        /* 跳转到同修汇对应商品详情页 (H5 hash 路由) */
+        card.href = "https://club.zhenhesheng.cn/#/pages-sub/product/detail?id=" + p.id;
         card.target = "_blank";
         card.innerHTML =
           '<div class="product-img-wrap">' +
