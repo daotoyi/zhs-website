@@ -36,21 +36,22 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ZHS_DIR="$(dirname "$SCRIPT_DIR")"
 
 NODE_BIN="/Users/wenhua/.workbuddy/binaries/node/versions/22.22.2/bin/node"
-MCPORTER_JSON="${ZHS_DIR}/../zhs-deploy/.mcp/cloudbase-mcp/node_modules/mcporter/package.json"
+# 站点目录是 zhs-website/zhenhesheng.cn, zhs-deploy 在其上两级 (2026-10-18 修: 原写 ../zhs-deploy 会 cd 失败)
+MCPORTER_JSON="${ZHS_DIR}/../../zhs-deploy/.mcp/cloudbase-mcp/node_modules/mcporter/package.json"
 
 if [[ ! -f "$MCPORTER_JSON" ]]; then
     # Fallback: use npx mcporter
     echo "⚠️  Local mcporter not found, using npx..."
-    cd "$ZHS_DIR/../zhs-deploy"
+    cd "$ZHS_DIR/../../zhs-deploy"
     npx -y mcporter call cloudbase.manageHosting action=upload \
-        --args "{\"localPath\":\"${ZHS_DIR}\",\"cloudPath\":\"/\",\"ignore\":[\"zhs/**\",\".git/**\"]}"
+        --args "{\"localPath\":\"${ZHS_DIR}\",\"cloudPath\":\"/\",\"ignore\":[\"zhs/**\",\".git/**\",\".DS_Store\",\"scripts/**\"]}"
 else
     MCP_CLI="$(dirname "$(dirname "$MCPORTER_JSON")")/cli.cjs"
     if [[ -f "$MCP_CLI" ]]; then
         echo "📦 Uploading to CloudBase static hosting..."
-        cd "$ZHS_DIR/../zhs-deploy"
+        cd "$ZHS_DIR/../../zhs-deploy"
         $NODE_BIN "$MCP_CLI" call cloudbase.manageHosting action=upload \
-            --args "{\"localPath\":\"${ZHS_DIR}\",\"cloudPath\":\"/\",\"ignore\":[\"zhs/**\",\".git/**\"]}"
+            --args "{\"localPath\":\"${ZHS_DIR}\",\"cloudPath\":\"/\",\"ignore\":[\"zhs/**\",\".git/**\",\".DS_Store\",\"scripts/**\"]}"
     else
         echo "❌ CLI not found at $MCP_CLI"
         exit 1
