@@ -616,6 +616,90 @@ img { display: block; max-width: 100%; }
 .sch-meta { font-size: 13.5px; color: var(--ink-soft); line-height: 2; }
 .sch-meta .tag { color: var(--gold); }
 
+/* ---- 盘道页动态卡片: 顶部封面图 + 内容区 (仅作用于 [data-dynamic], 不影响首页静态卡片) ---- */
+.schedule-grid[data-dynamic] .schedule-card {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-grid[data-dynamic] .sch-cover {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+  background: #f3e8d4;
+}
+
+.schedule-grid[data-dynamic] .sch-body {
+  padding: 26px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.schedule-grid[data-dynamic] .sch-body .sch-meta { margin-top: auto; }
+
+/* ---- 盘道轮播图 (同步同修汇盘道动态轮播) ---- */
+.pandao-gallery {
+  position: relative;
+  margin-top: 38px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #2a1c0d;
+  border: 1px solid var(--line);
+}
+
+.pandao-gallery[hidden] { display: none; }
+
+.pd-gallery-track {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 21 / 9;
+}
+
+.pd-gallery-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .9s ease;
+}
+
+.pd-gallery-img.on { opacity: 1; }
+
+.pd-gallery-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+.pd-gallery-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .45);
+  cursor: pointer;
+  transition: all .3s;
+}
+
+.pd-gallery-dot.on {
+  width: 22px;
+  border-radius: 999px;
+  background: #fff;
+}
+
 /* ---------------- 时间轴（道之源） ---------------- */
 .timeline {
   position: relative;
@@ -886,6 +970,8 @@ img { display: block; max-width: 100%; }
   .about-cards { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   .pandao-banner { padding: 34px 26px; }
+  .pd-gallery-track { aspect-ratio: 4 / 3; }
+  .schedule-grid[data-dynamic] .sch-body { padding: 22px 22px 24px; }
   .article-row { flex-wrap: wrap; }
   .article-meta { margin-left: 74px; }
   .timeline::before { left: 10px; }

@@ -31,6 +31,26 @@
     return src;
   }
 
+  /* cloud:// fileID → 可访问签名 URL (存储桶私有读, 浏览器无法直接渲染 cloud://) */
+  function resolveCloudUrls(list) {
+    list = list || [];
+    var files = list.filter(function (f) {
+      return typeof f === "string" && f.indexOf("cloud://") === 0;
+    });
+    if (!files.length) return Promise.resolve(list.slice());
+    return call("app.fileUrl", { fileList: files }).then(function (res) {
+      var map = {};
+      ((res && res.list) || []).forEach(function (it) {
+        if (it && it.fileID) map[it.fileID] = it.url || "";
+      });
+      return list.map(function (f) {
+        return (typeof f === "string" && f.indexOf("cloud://") === 0) ? (map[f] || "") : f;
+      });
+    }).catch(function () {
+      return list.map(function () { return ""; });
+    });
+  }
+
   /* ---------------- 道之器: 商品实时同步 ---------------- */
   var shopGrid = document.querySelector(".shop-grid[data-dynamic]");
   var shopNote = document.querySelector(".shop-note");
@@ -111,32 +131,121 @@
   var pandaoGrid = document.querySelector(".schedule-grid[data-dynamic]");
   if (pandaoGrid) {
     call("pandao.list", {}).then(function (list) {
+      if (!list || !list.length) return { list: [], urlSets: [] };
+      /* 每场活动的封面列表: covers 优先, 兼容旧数据只有 cover */
+      var coverLists = list.map(function (pd) {
+        var cs = (Array.isArray(pd.covers) && pd.covers.length)
+          ? pd.covers.slice()
+          : (pd.cover ? [pd.cover] : []);
+        return cs;
+      });
+      var flat = [];
+      coverLists.forEach(function (cs) { cs.forEach(function (c) { flat.push(c); }); });
+      /* cloud:// → 签名 URL, 再按场次切回去 */
+      return resolveCloudUrls(flat).then(function (urls) {
+        var cursor = 0;
+        var urlSets = coverLists.map(function (cs) {
+          var arr = urls.slice(cursor, cursor + cs.length);
+          cursor += cs.length;
+          return arr;
+        });
+        return { list: list, urlSets: urlSets };
+      });
+    }).then(function (r) {
+      var list = (r && r.list) || [];
+      var urlSets = (r && r.urlSets) || [];
       pandaoGrid.innerHTML = "";
-      if (!list || !list.length) {
+      if (!list.length) {
         pandaoGrid.innerHTML = '<div class="section-tip">暂无盘道活动</div>';
         return;
       }
-      list.forEach(function (pd) {
+      list.forEach(function (pd, i) {
         var price = pd.price;
         var priceHtml = price && Number(price) > 0 ? "¥" + Number(price).toFixed(0) : "免费";
+        var cover = ((urlSets[i] || []).filter(Boolean))[0] || "";
+        var isOffline = /线下/.test(String(pd.title || "") + String(pd.place || ""));
         var card = document.createElement("a");
-        card.className = "schedule-card";
-        card.href = "https://club.zhenhesheng.cn/";
+        card.className = "schedule-card" + (isOffline ? " offline" : "");
+        /* 直达同修汇对应盘道活动详情页 (H5 hash 路由) */
+        card.href = "https://club.zhenhesheng.cn/#/pages-sub/pandao/detail?id=" + pd.id;
         card.target = "_blank";
         card.style.cursor = "pointer";
         card.innerHTML =
-          '<span class="sch-day">' + esc(pd.day || "") + "</span>" +
+          (cover ? '<img class="sch-cover" src="' + esc(cover) + '" alt="' + esc(pd.title || "盘道活动") + '" loading="lazy" onerror="this.style.display=\'none\'">' : "") +
+          '<div class="sch-body">' +
+          '<span class="sch-day">' + esc(pd.day || "盘道") + "</span>" +
           '<div class="sch-title">' + esc(pd.title || "") + "</div>" +
           '<p class="sch-meta">' +
           (pd.start_date ? "🕐 " + esc(pd.start_date) + (pd.time ? " " + esc(pd.time) : "") + "<br>" : "") +
           (pd.place ? "📍 " + esc(pd.place) + "<br>" : "") +
           '<span class="tag">' + priceHtml + "</span>" +
           (pd.desc ? "<br><span>" + esc(pd.desc) + "</span>" : "") +
-          "</p>";
+          "</p></div>";
         pandaoGrid.appendChild(card);
       });
     }).catch(function (e) {
       pandaoGrid.innerHTML = '<div class="section-tip">数据加载失败，请稍后刷新重试</div>';
     });
+  }
+
+  /* ---------------- 盘道: 动态轮播图 (同步同修汇盘道界面) ---------------- */
+  var gallery = document.querySelector("[data-pandao-banners]");
+  if (gallery) {
+    gallery.hidden = true;
+    call("app.payConfig", {}).then(function (cfg) {
+      var banners = (cfg && cfg.pandao_banners) || [];
+      if (!banners.length) return null;
+      return resolveCloudUrls(banners).then(function (urls) {
+        return urls.filter(Boolean);
+      });
+    }).then(function (urls) {
+      if (!urls || !urls.length) return;
+      gallery.hidden = false;
+      renderGallery(gallery, urls);
+    }).catch(function () { gallery.hidden = true; });
+  }
+
+  function renderGallery(host, urls) {
+    var track = host.querySelector(".pd-gallery-track");
+    var dots = host.querySelector(".pd-gallery-dots");
+    if (!track || !dots) return;
+    track.innerHTML = "";
+    dots.innerHTML = "";
+
+    urls.forEach(function (u, i) {
+      var img = document.createElement("img");
+      img.className = "pd-gallery-img" + (i === 0 ? " on" : "");
+      img.src = u;
+      img.alt = "盘道活动";
+      img.loading = i === 0 ? "eager" : "lazy";
+      track.appendChild(img);
+
+      var dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "pd-gallery-dot" + (i === 0 ? " on" : "");
+      dot.setAttribute("aria-label", "第 " + (i + 1) + " 张");
+      dot.addEventListener("click", function () { go(i); play(); });
+      dots.appendChild(dot);
+    });
+
+    var cur = 0;
+    var timer = null;
+
+    function go(i) {
+      var imgs = track.querySelectorAll(".pd-gallery-img");
+      var ds = dots.querySelectorAll(".pd-gallery-dot");
+      cur = (i + urls.length) % urls.length;
+      for (var k = 0; k < imgs.length; k++) imgs[k].classList.toggle("on", k === cur);
+      for (var j = 0; j < ds.length; j++) ds[j].classList.toggle("on", j === cur);
+    }
+
+    function play() {
+      clearInterval(timer);
+      timer = setInterval(function () { go(cur + 1); }, 4000);
+    }
+
+    host.addEventListener("mouseenter", function () { clearInterval(timer); });
+    host.addEventListener("mouseleave", play);
+    play();
   }
 })();
