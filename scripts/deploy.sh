@@ -70,12 +70,33 @@ done
 
 cd "$DEPLOY_DIR"
 
+# 上传执行函数: 抽成函数, 便于失败后重试一次
+run_upload() {
+    if [[ -n "$MCP_CLI" && -n "$NODE_BIN" ]]; then
+        "$NODE_BIN" "$MCP_CLI" call cloudbase.manageHosting action=upload --args "$UPLOAD_ARGS" 2>&1 || true
+    else
+        npx -y mcporter call cloudbase.manageHosting action=upload --args "$UPLOAD_ARGS" 2>&1 || true
+    fi
+}
+
 if [[ -n "$MCP_CLI" && -n "$NODE_BIN" ]]; then
     echo "📦 Uploading to CloudBase (local mcporter: ${MCP_CLI})..."
-    UPLOAD_OUT="$("$NODE_BIN" "$MCP_CLI" call cloudbase.manageHosting action=upload --args "$UPLOAD_ARGS" 2>&1)" || true
 else
     echo "📦 Uploading to CloudBase (local mcporter 缺失, 使用 npx 兜底)..."
-    UPLOAD_OUT="$(npx -y mcporter call cloudbase.manageHosting action=upload --args "$UPLOAD_ARGS" 2>&1)" || true
+fi
+
+UPLOAD_OUT="$(run_upload)"
+
+# ---------- 3.1 自愈: 连接层故障自动 restart daemon 后重试一次 ----------
+# 2026-11-05 两次踩到 ECONNREFUSED / connect failed: Connection refused,
+# 根因都是代理端口轮换或 daemon 假死, daemon restart 后即可恢复 -> 这里做一次自愈, 免人工
+if ! printf '%s' "$UPLOAD_OUT" | grep -q '"success": *true'; then
+    if printf '%s' "$UPLOAD_OUT" | grep -qiE 'connection refused|econnrefused|connect failed|broker\.sock'; then
+        echo "⚠️ 检测到 mcporter 连接层故障 (非脚本/权限问题), 自动重启 daemon 后重试一次..."
+        npx -y mcporter daemon restart 2>&1 || true
+        sleep 2
+        UPLOAD_OUT="$(run_upload)"
+    fi
 fi
 
 echo "$UPLOAD_OUT"
