@@ -370,6 +370,10 @@ img { display: block; max-width: 100%; }
 /* ---------------- 栏目卡 ---------------- */
 .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 
+/* 同修入口：短视频/社区分组小标题 */
+.feat-subhead { text-align: center; font-family: var(--kai); font-size: 15px; letter-spacing: 4px; color: var(--ink-soft); margin: 38px 0 20px; }
+.feat-subhead::before, .feat-subhead::after { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--line); vertical-align: middle; margin: 0 12px; }
+
 /* 同修三约（盘道页）：三卡居中 */
 .vow-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
 .vow-grid .ph-card { flex: 0 1 300px; max-width: 320px; }
